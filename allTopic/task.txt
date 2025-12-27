@@ -1,0 +1,20 @@
+REST API - jSON 
+
+get  /user  -  list all users -->open on browser
+get  /api/user/1 - get the user with id 1  /api so open on mobile
+get  /api/user/2 - get the user with id 2
+//dynamic path parameters
+fet /api/users/:id -> :id varible
+
+post /api/user -creat new user
+
+patch /api/user/id  edit the user with id 1
+
+delete  /api/user/id  delete the user with id 1
+
+
+information responses     100-199
+successful res            200-299
+redirection messages      300-399
+client error res          400-499
+server error res          500-599
