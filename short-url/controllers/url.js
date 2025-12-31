@@ -7,18 +7,31 @@ async function handleGeneratNewShortURL(req, res) {
     if (!body.url)
         return res.status(400).json({ error: "url is required" });
 
-    const shortID = nanoid(8);
+    // Safety check: Ensure user is authenticated
+    if (!req.user || !req.user._id) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
 
-    await URL.create({
-        shortId: shortID,
-        redirectURL: body.url,
-        visitHistory: [],
-        createdBy:req.user._id,
-    });
-    return res.render("home",{
-        id:shortID,
-    })
-    // return res.json({ id: shortID });
+    try {
+        const shortID = nanoid(8);
+
+        await URL.create({
+            shortId: shortID,
+            redirectURL: body.url,
+            visitHistory: [],
+            createdBy: req.user._id,
+        });
+        
+        // Fetch all URLs for the user to display on home page
+        const allurls = await URL.find({ createdBy: req.user._id });
+        
+        return res.render("home", {
+            urls: allurls,
+            id: shortID,
+        });
+    } catch (error) {
+        return res.status(500).json({ error: "Failed to create short URL" });
+    }
 }
 async function handleGetAnalytics(req,res){
     const shortId = req.params.shortId;
